@@ -1,0 +1,26 @@
+resources:
+  jobs:
+    model_inference:
+      name: model_inference
+      queue:
+        enabled: true
+
+      parameters:
+        - name: "catalog_name"
+          default: "${var.catalog_name}"
+        - name: "schema_name"
+          default: "${var.schema_name}"    
+        - name: "model_name"
+          default: "${var.model_name}"
+
+      tasks:
+        - task_key: model_inference
+          notebook_task:
+            notebook_path: "../notebooks/model_inference.ipynb"
+            base_parameters:
+              catalog_name: "{{job.parameters.catalog_name}}"
+              schema_name: "{{job.parameters.schema_name}}"
+              model_name: "{{job.parameters.model_name}}"
+
+      tags:
+        Project: "${bundle.name}"
