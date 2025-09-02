@@ -22,7 +22,9 @@ mlflow.openai.autolog()
 
 
 @mlflow.trace
-def run_agent(prompt, message):
+def predict_agent(message):
+
+def run_agent(content):
     """
     Send a user prompt to the LLM, and return a list of LLM response messages
     The LLM is allowed to call the code interpreter tool if needed, to respond to the user
@@ -30,7 +32,7 @@ def run_agent(prompt, message):
     result_msgs = []
     response = openai_client.chat.completions.create(
         model=LLM_ENDPOINT_NAME,
-        messages=[{"role": "user", "content": prompt + " " + message}],
+        messages=[{"role": "user", "content": content}],
     )
     msg = response.choices[0].message
     result_msgs.append(msg.to_dict())
@@ -45,7 +47,7 @@ class QuickstartAgent(ChatAgent):
     ) -> ChatAgentResponse:
         prompt = "You will receive a phrase, please return the sentiment. You only have three options: positive, neutral or negative. This is the phrase: "
         message = messages[-1].content
-        raw_msgs = run_agent(prompt, message)
+        raw_msgs = run_agent(prompt + " " + message)
         out = []
         for m in raw_msgs:
             out.append(ChatAgentMessage(
