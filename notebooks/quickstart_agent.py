@@ -22,8 +22,6 @@ mlflow.openai.autolog()
 
 
 @mlflow.trace
-def predict_agent(message):
-
 def run_agent(content):
     """
     Send a user prompt to the LLM, and return a list of LLM response messages
