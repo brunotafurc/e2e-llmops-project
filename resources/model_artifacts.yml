@@ -1,0 +1,8 @@
+resources:
+  models:
+    model:
+      name: ${var.model_name}
+
+  experiments:
+    experiment:
+      name: ${var.experiment_name}
