@@ -6,3 +6,8 @@ resources:
   experiments:
     experiment:
       name: ${var.experiment_name}
+
+  schemas:
+    sentiment_schema:
+      name: ${var.schema_name}
+      catalog_name: ${var.catalog_name}
