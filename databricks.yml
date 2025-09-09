@@ -10,17 +10,17 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://e2-demo-field-eng.cloud.databricks.com
+      host: https://xyz.workspace.azuredatabricks.net/
     variables:
-      catalog_name: btafur_catalog
+      catalog_name: btafur_dev
       schema_name: sentiment_agent_project
       model_name: sentiment_agent
 
   prod:
     workspace:
-      host: https://adb-273799781776463.3.azuredatabricks.net/
+      host: https://xyz.workspace.azuredatabricks.net/
     variables:
-      catalog_name: btafur_ws_llm
+      catalog_name: btafur_prod
       schema_name: sentiment_agent_project
       model_name: sentiment_agent
 
@@ -37,5 +37,3 @@ variables:
   experiment_name:
     description: "Name of experiment"
     default: "/Users/${workspace.current_user.userName}/${bundle.target}_${var.model_name}"
-
-#Environment variables, differentiating within evns (maybe init scripts)
