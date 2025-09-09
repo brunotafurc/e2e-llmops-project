@@ -1,0 +1,41 @@
+bundle:
+  name: "e2e-llmops-project"
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://e2-demo-field-eng.cloud.databricks.com
+    variables:
+      catalog_name: btafur_catalog
+      schema_name: sentiment_agent_project
+      model_name: sentiment_agent
+
+  prod:
+    workspace:
+      host: https://adb-273799781776463.3.azuredatabricks.net/
+    variables:
+      catalog_name: btafur_ws_llm
+      schema_name: sentiment_agent_project
+      model_name: sentiment_agent
+
+variables:
+  catalog_name:
+    description: "Name of the UC catalog to use"
+    default: "default_catalog"
+  schema_name:
+    description: "Name of the UC schema to use"
+    default: "default_schema"
+  model_name:
+    description: "Name of the UC model to use"
+    default: "default_model"
+  experiment_name:
+    description: "Name of experiment"
+    default: "/Users/${workspace.current_user.userName}/${bundle.target}_${var.model_name}"
+
+#Environment variables, differentiating within evns (maybe init scripts)
