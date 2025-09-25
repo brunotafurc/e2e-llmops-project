@@ -40,25 +40,6 @@ def run_agent(content, system_prompt=None):
     msg = response.choices[0].message
     return [msg.to_dict()]
 
-@mlflow.trace
-def run_agent_stream(content, system_prompt=None):
-    """
-    Send a user prompt to the LLM, and return a streaming response
-    """
-    messages = []
-    if system_prompt:
-        messages.append({"role": "system", "content": system_prompt})
-    
-    messages.append({"role": "user", "content": content})
-    
-    stream = openai_client.chat.completions.create(
-        model=LLM_ENDPOINT_NAME,
-        messages=messages,
-        stream=True,
-    )
-    
-    return stream
-
 
 class QuickstartAgent(ChatAgent):
     def __init__(self):
@@ -87,42 +68,7 @@ class QuickstartAgent(ChatAgent):
                 **m
             ))
         return ChatAgentResponse(messages=out)
-    
-    def predict_stream(
-        self,
-        messages: list[ChatAgentMessage],
-        context: Optional[ChatContext] = None,
-        custom_inputs: Optional[dict[str, Any]] = None,
-    ) -> Iterator[ChatAgentResponse]:
-        """
-        Stream responses from the agent
-        """
-        message = messages[-1].content
-        user_prompt = f"Analyze this phrase: {message}"
-        
-        stream = run_agent_stream(
-            content=user_prompt,
-            system_prompt=self.system_prompt
-        )
-        
-        accumulated_content = ""
-        message_id = uuid.uuid4().hex
-        
-        for chunk in stream:
-            if chunk.choices and len(chunk.choices) > 0:
-                delta = chunk.choices[0].delta
-                
-                if hasattr(delta, 'content') and delta.content is not None:
-                    accumulated_content += delta.content
-                    
-                    # Yield the current accumulated response
-                    response_msg = ChatAgentMessage(
-                        id=message_id,
-                        role="assistant",
-                        content=accumulated_content
-                    )
-                    
-                    yield ChatAgentResponse(messages=[response_msg])
+
 
 AGENT = QuickstartAgent()
 mlflow.models.set_model(AGENT)
